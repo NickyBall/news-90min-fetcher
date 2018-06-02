@@ -1,0 +1,25 @@
+extends layout
+
+block content
+  .row
+    .col-lg-12
+      h1.page-header News
+    .col-lg-12
+      .panel.panel-default
+        .panel-heading
+          | News List
+        // /.panel-heading
+        .panel-body
+          .table-responsive
+            table.table.table-striped#newstable
+              thead
+                tr
+                  th #
+                  th Title
+                  th Description
+                  th Author
+                  th Publish
+              tbody
+          // /.table-responsive
+        // /.panel-body
+      // /.panel
