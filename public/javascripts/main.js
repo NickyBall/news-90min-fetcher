@@ -7,7 +7,7 @@ $(document).ready(function() {
         var tableContent = '';
         $.each(data, function(index) {
             tableContent += '<tr>';
-            tableContent += '<td>' + index + '</td>';
+            tableContent += '<td>' + (index+1) + '</td>';
             tableContent += '<td><a href="' + this.link + '">' + this.title + '</a></td>';
             tableContent += '<td>' + this.description + '</td>';
             tableContent += '<td>' + this.author + '</td>';
