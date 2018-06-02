@@ -10,6 +10,12 @@ block content
           | News List
         // /.panel-heading
         .panel-body
+          form#search-form.form-group
+            .form-group.input-group
+              input#page-input.form-control(type='number', placeholder='Input Page')
+              span.input-group-btn
+                button.btn.btn-default(type='submit')
+                  i.fa.fa-search
           .table-responsive
             table.table.table-striped#newstable
               thead
