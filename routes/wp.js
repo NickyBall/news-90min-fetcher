@@ -17,7 +17,7 @@ router.post('/create', function(req, res, next) {
   });
 
   var content = `
-  <div class="nm-embed" data-url="https://www.90min.com/${req.body.url}" data-embed-type="embed" data-show-date data-show-author>
+  <div class="nm-embed" data-url="https://www.90min.com${req.body.url}" data-embed-type="embed" data-show-date data-show-author>
     <div class="nm-embed-loader">
       <div class="spinner sk-circle">
         <div class="sk-circle1 sk-child"></div>
@@ -35,7 +35,7 @@ router.post('/create', function(req, res, next) {
       </div>
     </div>
     <div class="nm-embed-wrapper"></div>
-      <a class="nm-embed-post" href="https://www.90min.com/${req.body.url}">
+      <a class="nm-embed-post" href="https://www.90min.com${req.body.url}">
         ครบทุกชาติ ! รายชื่อ 23 คนสุดท้ายทั้ง 32 ทีม ที่นี่ที่เดียว
       </a>
     </div>
