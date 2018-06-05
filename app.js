@@ -14,6 +14,7 @@ var uri = "mongodb+srv://nickyball:Ball123456@cluster0-qp8nd.mongodb.net/nodetes
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var newsRouter = require('./routes/news');
+var wpRouter = require('./routes/wp');
 
 var app = express();
 
@@ -37,6 +38,7 @@ app.use(function(req,res,next) {
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/news', newsRouter);
+app.use('/wp', wpRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

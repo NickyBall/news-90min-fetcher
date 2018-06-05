@@ -30,6 +30,9 @@ router.get('/top', function(req, res, next) {
         
         articles.forEach(function(article, index) {
             var item = {};
+            var url = article.querySelector('a.feedpage-article__thumbnail-wrapper');
+            item.url = url.getAttribute('href');
+            
             var img = article.querySelector('img.feedpage-article__thumbnail');
             item.thumbnail = img.src;
 
