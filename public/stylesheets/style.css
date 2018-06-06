@@ -6,3 +6,13 @@ body {
 a {
   color: #00B7FF;
 }
+
+.center {
+  text-align: center;
+}
+
+.approve_col {
+  text-align: center;
+  vertical-align: middle;
+  line-height: 90px;       /* the same as your div height */
+}

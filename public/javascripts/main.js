@@ -32,11 +32,11 @@ function fetch_top_news(page) {
         var tableContent = '';
         $.each(data, function(index) {
             tableContent += '<tr>';
-            tableContent += '<td>' + (index+1) + '</td>';
+            tableContent += '<td class="center">' + (index+1) + '</td>';
             tableContent += '<td><a href="#">' + this.title + '</a></td>';
-            tableContent += '<td>' + this.desc + '</td>';
-            tableContent += '<td>' + this.author + '</td>';
-            tableContent += '<td><button class="approve_btn btn btn-success" type="button" data-title="'+this.title+'" data-url="'+this.url+'" class="btn btn-success">Approve</button></td>';
+            // tableContent += '<td>' + this.desc + '</td>';
+            // tableContent += '<td>' + this.author + '</td>';
+            tableContent += '<td class="center"><button class="approve_btn btn btn-success" type="button" data-title="'+this.title+'" data-url="'+this.url+'">Approve</button></td>';
             tableContent += '</tr>';
         });
         $('#newstable tbody').html(tableContent);
@@ -44,17 +44,25 @@ function fetch_top_news(page) {
             var btn = $(this);
             var title = btn.data('title');
             var url = btn.data('url');
-
+            var parent = btn.parent();
+            btn.data('loading-text', '<i class="fa fa-spinner fa-spin"></i> Approving');
+            btn.button('loading');
             console.log('button click title ' + title);
-            $.post('/wp/create',
-                {
-                    title: title,
-                    url: url
-                },
-                function(result) {
-                    btn.prop('disabled', true);
-                }
-            )
+            // $.post('/wp/create',
+            //     {
+            //         title: title,
+            //         url: url
+            //     },
+            //     function(result) {
+            //         btn.prop('disabled', true);
+            //     }
+            // )
+                setTimeout(function() {
+                    btn.button('reset');
+                    btn.css('display', 'none');
+                    parent.append('Approved');
+                    parent.addClass('approve_col');
+            }, 3000);
         });
     });
 }
