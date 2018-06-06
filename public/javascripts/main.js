@@ -48,21 +48,24 @@ function fetch_top_news(page) {
             btn.data('loading-text', '<i class="fa fa-spinner fa-spin"></i> Approving');
             btn.button('loading');
             console.log('button click title ' + title);
-            // $.post('/wp/create',
-            //     {
-            //         title: title,
-            //         url: url
-            //     },
-            //     function(result) {
-            //         btn.prop('disabled', true);
-            //     }
-            // )
-                setTimeout(function() {
+            $.post('/wp/create',
+                {
+                    title: title,
+                    url: url
+                },
+                function(result) {
                     btn.button('reset');
                     btn.css('display', 'none');
                     parent.append('Approved');
                     parent.addClass('approve_col');
-            }, 3000);
+                }
+            )
+            //     setTimeout(function() {
+            //         btn.button('reset');
+            //         btn.css('display', 'none');
+            //         parent.append('Approved');
+            //         parent.addClass('approve_col');
+            // }, 3000);
         });
     });
 }
