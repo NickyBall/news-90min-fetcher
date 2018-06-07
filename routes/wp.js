@@ -11,9 +11,13 @@ router.post('/posttest', function(req, res, next) {
 router.post('/create', function(req, res, next) {
   let api_key = '768f82cfeba2c6124836763247feaa92939a93a7';
 
-  axios.get('https://tiny.lol/api/?api='+api_key+'&url='+req.body.url).then(response => {
-    if (response.status === 'success') {
-      var short_url = response.shortenedUrl;
+  axios.get('https://tiny.lol/api/?api='+api_key+'&url=https://www.90min.com'+req.body.url).then(response => {
+    
+    
+    if (response.data.status === 'success') {
+      var short_url = response.data.shortenedUrl;
+      
+      
       var wp = new WPAPI({
         endpoint: 'https://next88.club/wp-json',
         // This assumes you are using basic auth, as described further below
@@ -25,7 +29,7 @@ router.post('/create', function(req, res, next) {
       var content = `
       <div class="partner">
         <a href="${short_url}" title="90MiN" target="_blank" class="link">
-          <img src="//s.isanook.com/sp/0/uc/0/1009/90MinLogo.png" alt="90MiN" width="100" height="35">
+          <img src="https://next88.club/wp-content/uploads/2018/06/90MinLogo.png" alt="90MiN" width="100" height="35">
         </a>
         <p>สนับสนุนเนื้อหา</p>
       </div>
