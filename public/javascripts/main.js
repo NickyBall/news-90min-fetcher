@@ -24,48 +24,86 @@ $(document).ready(function() {
     
 });
 
+function check_news(url) {
+    $.get('/news/check?url='+url, function (result) {
+        return result;
+    });
+}
+
 function fetch_top_news(page) {
     $.get('/news/top?page='+page, function(data) {
         // For each item in our JSON, add a table row and cells to the content string
         
         // Empty content string
-        var tableContent = '';
+        var events = [];
+        var dataList = [];
         $.each(data, function(index) {
-            tableContent += '<tr>';
-            tableContent += '<td class="center">' + (index+1) + '</td>';
-            tableContent += '<td><a href="#">' + this.title + '</a></td>';
-            // tableContent += '<td>' + this.desc + '</td>';
-            // tableContent += '<td>' + this.author + '</td>';
-            tableContent += '<td class="center"><button class="approve_btn btn btn-success" type="button" data-title="'+this.title+'" data-url="'+this.url+'">Approve</button></td>';
-            tableContent += '</tr>';
+            var title = this.title;
+            var url = this.url;
+            var index = index+1;
+            events.push(
+                $.get('/news/check?url='+url, function (result) {
+                    var publish_content = result.status == 200 ?
+                    '<td class="center">Approved</td>' :
+                    '<td class="center"><button class="approve_btn btn btn-success" type="button" data-title="'+title+'" data-url="'+url+'">Approve</button></td>'
+    
+                    var tableContent = '';
+    
+                    tableContent += '<tr>';
+                    tableContent += '<td class="center">' + index + '</td>';
+                    tableContent += '<td><a href="#">' + title + '</a></td>';
+                    // tableContent += '<td>' + this.desc + '</td>';
+                    // tableContent += '<td>' + this.author + '</td>';
+                    tableContent += publish_content;
+                    tableContent += '</tr>';
+                    
+                    dataList.push({
+                        index: index,
+                        data: tableContent
+                    });
+                })
+            );
         });
-        $('#newstable tbody').html(tableContent);
-        $('.approve_btn').on('click', function() {
-            var btn = $(this);
-            var title = btn.data('title');
-            var url = btn.data('url');
-            var parent = btn.parent();
-            btn.data('loading-text', '<i class="fa fa-spinner fa-spin"></i> Approving');
-            btn.button('loading');
-            console.log('button click title ' + title);
-            $.post('/wp/create',
-                {
-                    title: title,
-                    url: url
-                },
-                function(result) {
-                    btn.button('reset');
-                    btn.css('display', 'none');
-                    parent.append('Approved');
-                    parent.addClass('approve_col');
-                }
-            )
-            //     setTimeout(function() {
-            //         btn.button('reset');
-            //         btn.css('display', 'none');
-            //         parent.append('Approved');
-            //         parent.addClass('approve_col');
-            // }, 3000);
+        $.when.apply($, events).then(function() {
+            dataList = dataList.sort(function (a, b) {
+                return a.index - b.index;
+            });
+            $.each(dataList, function() {
+                $('#newstable tbody').append(this.data);
+            });
+            $('.approve_btn').on('click', function() {
+                var btn = $(this);
+                var title = btn.data('title');
+                var url = btn.data('url');
+                var parent = btn.parent();
+                btn.data('loading-text', '<i class="fa fa-spinner fa-spin"></i> Approving');
+                btn.button('loading');
+                console.log('button click title ' + title);
+    
+                $.post('/news/create', 
+                    {
+                        url: url
+                    },
+                    function (result) {
+                        if (result.status == 200) {
+                            $.post('/wp/create',
+                                {
+                                    title: title,
+                                    url: url
+                                },
+                                function(response) {
+                                    btn.button('reset');
+                                    btn.css('display', 'none');
+                                    parent.append('Approved');
+                                    parent.addClass('approve_col');
+                                }
+                            );
+                        } else {
+                            btn.button('reset');
+                        }
+                    }
+                );
+            });
         });
     });
 }

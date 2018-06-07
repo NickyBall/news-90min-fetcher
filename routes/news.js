@@ -1,6 +1,7 @@
 var express = require('express');
 const axios = require('axios');
 let jsdom = require('jsdom').JSDOM;
+var News = require('../models/news');
 var router = express.Router();
 
 /* GET news listing. */
@@ -54,6 +55,56 @@ router.get('/top', function(req, res, next) {
     }).catch(err => {
         console.log(err);
     });
+});
+
+router.post('/create', function(req, res, next) {
+    if (req.body.url) {
+        var NewsData = {
+            url: req.body.url
+        }
+        News.create(NewsData, function(err, result) {
+            if (err) {
+                res.json({
+                    status: 400
+                });
+            } else {
+                res.json({
+                    status: 200
+                });
+            }
+        });
+    } else {
+        res.json({
+            status: 400
+        });
+    }
+});
+
+router.get('/check', function (req, res, next) {
+    if (req.query.url) {
+        News.findOne({ url: req.query.url }).exec(function (err, data) {
+            if (err) {
+                res.json({
+                    status: 400
+                });
+            } else {
+                if (data) {
+                    res.json({
+                        status: 200,
+                        data: data
+                    });
+                } else {
+                    res.json({
+                        status: 404
+                    });
+                }
+            }
+        })
+    } else {
+        res.json({
+            status: 400
+        });
+    }
 });
 
 module.exports = router;
