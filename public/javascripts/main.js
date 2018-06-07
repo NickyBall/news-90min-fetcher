@@ -73,6 +73,7 @@ function fetch_top_news(page) {
             dataList = dataList.sort(function (a, b) {
                 return a.index - b.index;
             });
+            $('#newstable tbody').html('');
             $.each(dataList, function() {
                 $('#newstable tbody').append(this.data);
             });
