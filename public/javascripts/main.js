@@ -40,18 +40,23 @@ function fetch_top_news(page) {
         $.each(data, function(index) {
             var title = this.title;
             var url = this.url;
+            var desc = this.desc;
+            var img = this.thumbnail;
             var index = index+1;
             events.push(
                 $.get('/news/check?url='+url, function (result) {
-                    var publish_content = result.status == 200 ?
-                    '<td class="center">Approved</td>' :
-                    '<td class="center"><button class="approve_btn btn btn-success" type="button" data-title="'+title+'" data-url="'+url+'">Approve</button></td>'
-    
+                    var publish_status = result.status == 200 ? 'publish' : 'no'
+                    var publish_content = '<td class="center"><p>';
+                    publish_content += '<button class="read_btn btn btn-primary" data-toggle="modal" data-target="#myModal" data-status="'+publish_status+'" data-title="'+title+'" data-url="'+url+'" data-img="'+img+'" data-desc="'+desc+'">Read</button>'
+                    publish_content += result.status == 200 ?
+                    '' :
+                    '<button class="approve_btn btn btn-success" type="button" data-title="'+title+'" data-url="'+url+'">Approve</button>'
+                    publish_content += '</p></td>';
                     var tableContent = '';
     
                     tableContent += '<tr>';
                     tableContent += '<td class="center">' + index + '</td>';
-                    tableContent += '<td><a href="#">' + title + '</a></td>';
+                    tableContent += '<td>' + title + '</td>';
                     // tableContent += '<td>' + this.desc + '</td>';
                     // tableContent += '<td>' + this.author + '</td>';
                     tableContent += publish_content;
@@ -76,7 +81,6 @@ function fetch_top_news(page) {
                 var btn = $(this);
                 var title = btn.data('title');
                 var url = btn.data('url');
-                var parent = btn.parent();
                 btn.data('loading-text', '<i class="fa fa-spinner fa-spin"></i> Approving');
                 btn.button('loading');
                 console.log('button click title ' + title);
@@ -95,8 +99,6 @@ function fetch_top_news(page) {
                                 function(response) {
                                     btn.button('reset');
                                     btn.css('display', 'none');
-                                    parent.append('Approved');
-                                    parent.addClass('approve_col');
                                 }
                             );
                         } else {
@@ -105,6 +107,57 @@ function fetch_top_news(page) {
                     }
                 );
             });
+            $('.read_btn').on('click', function() {
+                var title = $(this).data('title');
+                var url = $(this).data('url');
+                var img = $(this).data('img');
+                var desc = $(this).data('desc');
+                var status = $(this).data('status');
+
+                var content = `
+                    <div class="center">
+                        <img src="${img}" />
+                    </div>
+                    <p>${desc}</p>
+                `;
+
+                $('#myModal .modal-title').html(title);
+                $('#myModal .modal-body').html(content);
+                $('#myModal .modal-footer').html('<button type="button" data-dismiss="modal" class="btn btn-default">Close</button>');
+                if (status !== 'publish') {
+                    $('#myModal .modal-footer').append('<button type="button" class="btn btn-success modal-approve">Approve</button>');
+                    $('#myModal .modal-footer .modal-approve').on('click', function() {
+                        var btn = $(this);
+                        btn.data('loading-text', '<i class="fa fa-spinner fa-spin"></i> Approving');
+                        btn.button('loading');
+                        console.log('button click title ' + title);
+            
+                        $.post('/news/create', 
+                            {
+                                url: url
+                            },
+                            function (result) {
+                                if (result.status == 200) {
+                                    $.post('/wp/create',
+                                        {
+                                            title: title,
+                                            url: url
+                                        },
+                                        function(response) {
+                                            btn.button('reset');
+                                            btn.css('display', 'none');
+                                            $('.approve_btn[data-url="'+url+'"]').css('display', 'none');
+                                            $('.read_btn[data-url="'+url+'"]').data('status', 'publish');
+                                        }
+                                    );
+                                } else {
+                                    btn.button('reset');
+                                }
+                            }
+                        );
+                    });
+                }
+            })
         });
     });
 }

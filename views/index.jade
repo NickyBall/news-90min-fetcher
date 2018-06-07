@@ -10,19 +10,34 @@ block content
           | News List
         // /.panel-heading
         .panel-body
-          form#search-form.form-group
+          // Modal
+          #myModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+            .modal-dialog
+              .modal-content
+                .modal-header
+                  button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+                  h4#myModalLabel.modal-title 
+                .modal-body
+                  
+                .modal-footer
+                  //- button.btn.btn-default(type='button', data-dismiss='modal') Close
+                  
+              // /.modal-content
+            // /.modal-dialog
+          // /.modal
+          form#search-form.form-group.col-md-2
             .form-group.input-group
               input#page-input.form-control(type='number', placeholder='Input Page', value='1')
               span.input-group-btn
                 button.btn.btn-default(type='submit')
                   i.fa.fa-search
-          .table-responsive
+          .table-responsive.col-md-12
             table.table.table-striped#newstable
               thead
                 tr
                   th.col-md-1.center #
                   th.col-md-8.center Title
-                  //- th Description
+                  //- th.col-md-4.center Date
                   //- th Author
                   th.col-md-3.center Operation
               tbody
