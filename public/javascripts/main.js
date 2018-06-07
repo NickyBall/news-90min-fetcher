@@ -33,7 +33,7 @@ function check_news(url) {
 function fetch_top_news(page) {
     $.get('/news/top?page='+page, function(data) {
         // For each item in our JSON, add a table row and cells to the content string
-        
+        waitingDialog.show('Fetching News...');
         // Empty content string
         var events = [];
         var dataList = [];
@@ -71,6 +71,7 @@ function fetch_top_news(page) {
             $.each(dataList, function() {
                 $('#newstable tbody').append(this.data);
             });
+            waitingDialog.hide();
             $('.approve_btn').on('click', function() {
                 var btn = $(this);
                 var title = btn.data('title');
